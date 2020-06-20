@@ -1,7 +1,7 @@
 # Личный проект «Типотека» [![Build status][travis-image]][travis-url]
 
-* Студент: [Александр Сашин](https://up.htmlacademy.ru/nodejs/3/user/147800).
-* Наставник: `Неизвестно`.
+- Студент: [Александр Сашин](https://up.htmlacademy.ru/nodejs/3/user/147800).
+- Наставник: [Сергей Рожков](https://htmlacademy.ru/profile/id1069033).
 
 ---
 
