@@ -3,7 +3,7 @@
 const fs = require("fs");
 const dayjs = require("dayjs");
 const duration = require("dayjs/plugin/duration");
-const { ExitCode } = require("../../constants");
+const { maxPublicationsNumber, ExitCode } = require("../../constants");
 const { getRandomInt, shuffle } = require("../../utils");
 
 dayjs.extend(duration);
@@ -90,8 +90,8 @@ const run = args => {
   const [count] = args;
   const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
-  if (countOffer > 1000) {
-    console.error("Не больше 1000 публикаций");
+  if (countOffer > maxPublicationsNumber) {
+    console.error(`Не больше ${maxPublicationsNumber} публикаций`);
     process.exit(ExitCode.error);
   }
 
