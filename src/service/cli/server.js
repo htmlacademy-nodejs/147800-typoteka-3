@@ -9,10 +9,10 @@ const FILENAME = `mocks.json`;
 const HttpCode = {
   OK: 200,
   NOT_FOUND: 404,
-  INTERNAL_SERVER_ERROR: 500
+  INTERNAL_SERVER_ERROR: 500,
 };
 
-const run = args => {
+const run = (args) => {
   const [customPort] = args;
   const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
 
@@ -33,6 +33,6 @@ const run = args => {
 };
 
 module.exports = {
-  name: "--server",
-  run
+  name: `--server`,
+  run,
 };

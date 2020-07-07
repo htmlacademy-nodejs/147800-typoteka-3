@@ -1,5 +1,7 @@
-const { getRandomInt } = require("./getRandomInt");
-const { shuffle } = require("./shuffle");
+"use strict";
+
+const { getRandomInt } = require(`./getRandomInt`);
+const { shuffle } = require(`./shuffle`);
 
 module.exports = {
   getRandomInt,
