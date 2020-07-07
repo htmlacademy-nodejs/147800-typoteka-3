@@ -1,69 +1,35 @@
 "use strict";
 
-const chalk = require(`chalk`);
-const http = require(`http`);
 const fs = require(`fs`).promises;
+const express = require(`express`);
 
 const DEFAULT_PORT = 3000;
 const FILENAME = `mocks.json`;
 
 const HttpCode = {
   OK: 200,
-  NOT_FOUND: 404
-};
-
-const sendResponse = (res, statusCode, message) => {
-  const template = `
-    <!Doctype html>
-      <html lang="ru">
-      <head>
-        <title>With love from Node</title>
-      </head>
-      <body>${message}</body>
-    </html>`.trim();
-
-  res.statusCode = statusCode;
-  res.writeHead(statusCode, {
-    "Content-Type": `text/html; charset=UTF-8`
-  });
-
-  res.end(template);
-};
-
-const onClientConnect = async (req, res) => {
-  const notFoundMessageText = `Not found`;
-
-  switch (req.url) {
-    case `/`:
-      try {
-        const fileContent = await fs.readFile(FILENAME);
-        const mocks = JSON.parse(fileContent);
-        const message = mocks.map(post => `<li>${post.title}</li>`).join(``);
-        sendResponse(res, HttpCode.OK, `<ul>${message}</ul>`);
-      } catch (err) {
-        sendResponse(res, HttpCode.NOT_FOUND, notFoundMessageText);
-      }
-
-      break;
-    default:
-      sendResponse(res, HttpCode.NOT_FOUND, notFoundMessageText);
-      break;
-  }
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500
 };
 
 const run = args => {
   const [customPort] = args;
   const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
 
-  http
-    .createServer(onClientConnect)
-    .listen(port)
-    .on(`listening`, err => {
-      if (err) {
-        return console.error(chalk.red(`Server creation error`), err);
-      }
-      return console.info(chalk.green(`Server started on ${port}`));
-    });
+  const app = express();
+  app.use(express.json());
+
+  app.get(`/posts`, async (req, res) => {
+    try {
+      const fileContent = await fs.readFile(FILENAME);
+      const mocks = JSON.parse(fileContent);
+      res.json(mocks);
+    } catch (error) {
+      res.status(HttpCode.INTERNAL_SERVER_ERROR).send(error);
+    }
+  });
+
+  app.listen(port);
 };
 
 module.exports = {
