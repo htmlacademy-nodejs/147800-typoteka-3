@@ -4,6 +4,7 @@ const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 const dayjs = require(`dayjs`);
 const duration = require(`dayjs/plugin/duration`);
+const { nanoid } = require(`nanoid`);
 const { maxPublicationsNumber, ExitCode } = require(`../../constants`);
 const { getRandomInt, shuffle } = require(`../../utils`);
 
@@ -16,6 +17,7 @@ const FILE_NAME = `mocks.json`;
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
+const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
 const getCreatedDate = () => {
   const currentDateInMilliseconds = dayjs().valueOf();
@@ -27,17 +29,19 @@ const getCreatedDate = () => {
   ).format(`YYYY-MM-DD hh:mm:ss`);
 };
 
-const generateOffers = (count, titles, categories, sentences) =>
+const generateArticles = (count, titles, categories, sentences, comments) =>
   Array(count)
     .fill({})
     .map(() => ({
+      id: nanoid(),
       title: titles[getRandomInt(0, titles.length - 1)],
       cratedDate: getCreatedDate(),
-      announce: shuffle(sentences)
-        .slice(1, 5)
-        .join(` `),
+      announce: shuffle(sentences).slice(1, 5).join(` `),
       fullText: shuffle(sentences).join(` `),
-      category: [categories[getRandomInt(0, categories.length - 1)]]
+      category: [categories[getRandomInt(0, categories.length - 1)]],
+      comments: shuffle(comments)
+        .slice(1, getRandomInt(0, comments.length - 1))
+        .map((comment) => ({ id: nanoid(), text: comment })),
     }));
 
 const readContent = async (filePath) => {
@@ -54,6 +58,7 @@ const run = async (args) => {
   const sentences = await readContent(FILE_SENTENCES_PATH);
   const titles = await readContent(FILE_TITLES_PATH);
   const categories = await readContent(FILE_CATEGORIES_PATH);
+  const comments = await readContent(FILE_COMMENTS_PATH);
 
   const [count] = args;
   const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
@@ -64,7 +69,7 @@ const run = async (args) => {
   }
 
   const content = JSON.stringify(
-    generateOffers(countOffer, titles, categories, sentences)
+    generateArticles(countOffer, titles, categories, sentences, comments)
   );
 
   try {
@@ -77,5 +82,5 @@ const run = async (args) => {
 
 module.exports = {
   name: `--generate`,
-  run
+  run,
 };
