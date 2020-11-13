@@ -6,7 +6,7 @@ const articlesRoutes = require(`./routes/articles-routes`);
 const myRoutes = require(`./routes/my-routes`);
 const mainRoutes = require(`./routes/main-routes`);
 
-const DEFAULT_PORT = 8080;
+const PORT = 8080;
 const PUBLIC_DIR = `public`;
 
 const app = express();
@@ -22,4 +22,4 @@ app.use(`/500`, (req, res) => res.render(`errors/500`));
 
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 
-app.listen(DEFAULT_PORT);
+app.listen(PORT);
