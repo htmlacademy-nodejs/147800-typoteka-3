@@ -1,31 +1,50 @@
 "use strict";
 
 const express = require(`express`);
-const articlesRoutes = require(`./routes/articles`);
+const routes = require(`../api/routes`);
+const { getLogger } = require(`../logger`);
 
 const PORT = 3000;
+
+const app = express();
+app.use(express.json());
+
+const logger = getLogger();
+
+app.use((req, res, next) => {
+  logger.debug(`Start request to url ${req.url}`);
+  next();
+});
+
+app.use(`/api`, (req, res, next) => {
+  routes(req, res, next);
+  logger.info(`End request with status code ${res.statusCode}`);
+});
+
+app.use((req, res) => {
+  res.status(404).send(`Page not found`);
+  logger.error(`End request with error ${res.statusCode}`);
+});
+
+app.use((error) => {
+  logger.error(`${error}`);
+});
 
 const run = (args) => {
   const [customPort] = args;
   const port = Number.parseInt(customPort, 10) || PORT;
 
-  const app = express();
-  app.use(express.json());
-
-  app.use(`/api/articles`, articlesRoutes);
-
-  app.get(`/api/categories`, (req, res) => {
-    res.send(`Send categories`);
-  });
-
-  app.get(`/api/search`, (req, res) => {
-    res.send(`Search with query param "${req.query.query}"`);
-  });
-
-  app.listen(port);
+  app
+    .listen(port, () => {
+      logger.info(`Server start on ${port}`);
+    })
+    .on(`error`, (err) => {
+      logger.error(`Server can't start. Error: ${err}`);
+    });
 };
 
 module.exports = {
   name: `--server`,
   run,
+  app,
 };
