@@ -27,6 +27,9 @@ articlesRouter.post(`/`, (req, res) => {
 });
 
 articlesRouter.get(`/:articleId`, (req, res) => {
+  if (Number(req.params.articleId) < 0) {
+    return res.status(HttpCode.NOT_FOUND).send(`Article not found`);
+  }
   res.send(`Return article by articleId="${req.params.articleId}"`);
 });
 
