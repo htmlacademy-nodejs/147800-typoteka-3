@@ -41,8 +41,20 @@ articlesRouter.delete(`/:articleId`, (req, res) => {
   res.send(`Delete article with articleId="${req.params.articleId}"`);
 });
 
-articlesRouter.get(`/:articleId/comments`, (req, res) => {
-  res.send(`Return article comments by articleId="${req.params.articleId}"`);
+articlesRouter.get(`/:articleId/comments`, async (req, res) => {
+  try {
+    const fileContent = await fs.readFile(FILENAME);
+    const articles = JSON.parse(fileContent);
+    const selectedArticle = articles.find(
+      (article) => article.id === req.params.articleId
+    );
+    if (!selectedArticle) {
+      return res.status(HttpCode.NOT_FOUND).send(`Article not found`);
+    }
+    res.json(selectedArticle.comments);
+  } catch (error) {
+    res.status(HttpCode.INTERNAL_SERVER_ERROR).send(error);
+  }
 });
 
 articlesRouter.post(`/:articleId/comments`, (req, res) => {
