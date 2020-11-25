@@ -10,6 +10,7 @@ const PORT = 8080;
 const PUBLIC_DIR = `public`;
 
 const app = express();
+app.locals.dayjs = require(`dayjs`);
 
 app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
