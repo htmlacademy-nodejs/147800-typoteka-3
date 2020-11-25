@@ -19,10 +19,12 @@ describe(`server test`, () => {
     });
 
     test(`GET article successfully`, async () => {
-      const res = await request(server).get(`/api/articles/1`);
+      const articles = await request(server).get(`/api/articles`);
+      const res = await request(server).get(
+        `/api/articles/${articles.body[0].id}`
+      );
 
       expect(res.statusCode).toBe(200);
-      expect(res.text).toEqual(`Return article by articleId="1"`);
     });
 
     test(`GET article with error`, async () => {

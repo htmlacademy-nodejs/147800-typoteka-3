@@ -26,11 +26,20 @@ articlesRouter.post(`/`, (req, res) => {
   res.send(`Add new article`);
 });
 
-articlesRouter.get(`/:articleId`, (req, res) => {
-  if (Number(req.params.articleId) < 0) {
-    return res.status(HttpCode.NOT_FOUND).send(`Article not found`);
+articlesRouter.get(`/:articleId`, async (req, res) => {
+  try {
+    const fileContent = await fs.readFile(FILENAME);
+    const articles = JSON.parse(fileContent);
+    const selectedArticle = articles.find(
+      (article) => article.id === req.params.articleId
+    );
+    if (!selectedArticle) {
+      return res.status(HttpCode.NOT_FOUND).send(`Article not found`);
+    }
+    res.json(selectedArticle);
+  } catch (error) {
+    res.status(HttpCode.INTERNAL_SERVER_ERROR).send(error);
   }
-  res.send(`Return article by articleId="${req.params.articleId}"`);
 });
 
 articlesRouter.put(`/:articleId`, (req, res) => {
