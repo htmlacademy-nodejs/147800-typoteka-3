@@ -85,7 +85,19 @@ describe(`server test`, () => {
     const res = await request(server).get(`/api/categories`);
 
     expect(res.statusCode).toBe(200);
-    expect(res.text).toEqual(`Send categories`);
+    expect(res.body).toEqual([
+      `Деревья`,
+      `За жизнь`,
+      `Без рамки`,
+      `Разное`,
+      `IT`,
+      `Музыка`,
+      `Кино`,
+      `Программирование`,
+      `Железо`,
+      `Спорт`,
+      `Культура`,
+    ]);
   });
 
   test(`GET search successfully`, async () => {

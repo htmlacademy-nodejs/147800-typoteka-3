@@ -1,14 +1,16 @@
 "use strict";
 
 const { Router } = require(`express`);
+const { readContent } = require(`../cli/generate`);
 const articlesRoutes = require(`./routes/articles`);
 
 const app = new Router();
 
 app.use(`/articles`, articlesRoutes);
 
-app.get(`/categories`, (req, res) => {
-  res.send(`Send categories`);
+app.get(`/categories`, async (req, res) => {
+  const categories = await readContent(`./data/categories.txt`);
+  res.json(categories);
 });
 
 app.get(`/search`, (req, res) => {
