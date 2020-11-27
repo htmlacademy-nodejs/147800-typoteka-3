@@ -101,9 +101,9 @@ describe(`server test`, () => {
   });
 
   test(`GET search successfully`, async () => {
-    const res = await request(server).get(`/api/search?query=article`);
+    const res = await request(server).get(`/api/search?query=`);
 
     expect(res.statusCode).toBe(200);
-    expect(res.text).toEqual(`Search with query param "article"`);
+    expect(res.body.length).not.toEqual(0);
   });
 });
