@@ -11,6 +11,7 @@ const PORT = 8080;
 const PUBLIC_DIR = `public`;
 
 const app = express();
+app.use(express.urlencoded({ extended: false }));
 app.locals.dayjs = require(`dayjs`);
 
 app.set(`views`, path.resolve(__dirname, `templates`));
