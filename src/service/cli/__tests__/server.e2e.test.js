@@ -19,10 +19,12 @@ describe(`server test`, () => {
     });
 
     test(`GET article successfully`, async () => {
-      const res = await request(server).get(`/api/articles/1`);
+      const articles = await request(server).get(`/api/articles`);
+      const res = await request(server).get(
+        `/api/articles/${articles.body[0].id}`
+      );
 
       expect(res.statusCode).toBe(200);
-      expect(res.text).toEqual(`Return article by articleId="1"`);
     });
 
     test(`GET article with error`, async () => {
@@ -47,10 +49,19 @@ describe(`server test`, () => {
     });
 
     test(`GET comments successfully`, async () => {
-      const res = await request(server).get(`/api/articles/1/comments`);
+      const articles = await request(server).get(`/api/articles`);
+      const res = await request(server).get(
+        `/api/articles/${articles.body[0].id}/comments`
+      );
 
       expect(res.statusCode).toBe(200);
-      expect(res.text).toEqual(`Return article comments by articleId="1"`);
+    });
+
+    test(`GET comments with error`, async () => {
+      const res = await request(server).get(`/api/articles/0/comments`);
+
+      expect(res.statusCode).toBe(404);
+      expect(res.text).toBe(`Article not found`);
     });
 
     test(`POST comment successfully`, async () => {
@@ -74,13 +85,25 @@ describe(`server test`, () => {
     const res = await request(server).get(`/api/categories`);
 
     expect(res.statusCode).toBe(200);
-    expect(res.text).toEqual(`Send categories`);
+    expect(res.body).toEqual([
+      `Деревья`,
+      `За жизнь`,
+      `Без рамки`,
+      `Разное`,
+      `IT`,
+      `Музыка`,
+      `Кино`,
+      `Программирование`,
+      `Железо`,
+      `Спорт`,
+      `Культура`,
+    ]);
   });
 
   test(`GET search successfully`, async () => {
-    const res = await request(server).get(`/api/search?query=article`);
+    const res = await request(server).get(`/api/search?query=`);
 
     expect(res.statusCode).toBe(200);
-    expect(res.text).toEqual(`Search with query param "article"`);
+    expect(res.body.length).not.toEqual(0);
   });
 });

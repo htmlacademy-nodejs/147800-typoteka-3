@@ -29,20 +29,28 @@ const getCreatedDate = () => {
   ).format(`YYYY-MM-DD hh:mm:ss`);
 };
 
+const getPictureFileName = (number) =>
+  [`forest.jpg`, `sea-fullsize.jpg`, `sea.jpg`, `skyscraper.jpg`, null][number];
+
 const generateArticles = (count, titles, categories, sentences, comments) =>
   Array(count)
     .fill({})
-    .map(() => ({
-      id: nanoid(),
-      title: titles[getRandomInt(0, titles.length - 1)],
-      cratedDate: getCreatedDate(),
-      announce: shuffle(sentences).slice(1, 5).join(` `),
-      fullText: shuffle(sentences).join(` `),
-      category: [categories[getRandomInt(0, categories.length - 1)]],
-      comments: shuffle(comments)
-        .slice(1, getRandomInt(0, comments.length - 1))
-        .map((comment) => ({ id: nanoid(), text: comment })),
-    }));
+    .map(() => {
+      const picture = getPictureFileName(getRandomInt(0, 4));
+      return {
+        id: nanoid(),
+        title: titles[getRandomInt(0, titles.length - 1)],
+        createdDate: getCreatedDate(),
+        picture: picture ? picture.replace(`.jpg`, `@1x.jpg`) : null,
+        retinaPicture: picture ? picture.replace(`.jpg`, `@2x.jpg`) : null,
+        announce: shuffle(sentences).slice(1, 5).join(` `),
+        fullText: shuffle(sentences).join(` `),
+        category: [categories[getRandomInt(0, categories.length - 1)]],
+        comments: shuffle(comments)
+          .slice(1, getRandomInt(0, comments.length - 1))
+          .map((comment) => ({ id: nanoid(), text: comment })),
+      };
+    });
 
 const readContent = async (filePath) => {
   try {
@@ -83,4 +91,5 @@ const run = async (args) => {
 module.exports = {
   name: `--generate`,
   run,
+  readContent,
 };

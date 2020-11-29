@@ -1,6 +1,7 @@
 "use strict";
 
 const express = require(`express`);
+const chalk = require(`chalk`);
 const routes = require(`../api/routes`);
 const { getLogger } = require(`../logger`);
 
@@ -36,6 +37,7 @@ const run = (args) => {
 
   app
     .listen(port, () => {
+      console.info(chalk.green(`Server starts on PORT ${port}`));
       logger.info(`Server start on ${port}`);
     })
     .on(`error`, (err) => {
