@@ -53,11 +53,12 @@ ALTER TABLE public.article_categories OWNER TO postgres;
 CREATE TABLE public.articles (
     id integer NOT NULL,
     title character varying(50) NOT NULL,
-    created_date date,
+    created_at date,
     picture character varying(50),
     retina_picture character varying(50),
     announce text,
-    full_text text
+    full_text text,
+    user_id integer
 );
 
 
@@ -126,7 +127,9 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 CREATE TABLE public.comments (
     id integer NOT NULL,
     article_id integer NOT NULL,
-    text text
+    text text,
+    created_at timestamp(0) without time zone,
+    user_id integer
 );
 
 
@@ -155,6 +158,45 @@ ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
 
 
 --
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    first_name character varying(50),
+    last_name character varying(50),
+    email character varying(50),
+    picture character varying(50),
+    small_picture character varying(50),
+    password character varying(200)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
 -- Name: articles id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -176,6 +218,13 @@ ALTER TABLE ONLY public.comments ALTER COLUMN id SET DEFAULT nextval('public.com
 
 
 --
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
 -- Data for Name: article_categories; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -187,7 +236,7 @@ COPY public.article_categories (article_id, category_id) FROM stdin;
 -- Data for Name: articles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.articles (id, title, created_date, picture, retina_picture, announce, full_text) FROM stdin;
+COPY public.articles (id, title, created_at, picture, retina_picture, announce, full_text, user_id) FROM stdin;
 \.
 
 
@@ -203,7 +252,15 @@ COPY public.categories (id, label) FROM stdin;
 -- Data for Name: comments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.comments (id, article_id, text) FROM stdin;
+COPY public.comments (id, article_id, text, created_at, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, first_name, last_name, email, picture, small_picture, password) FROM stdin;
 \.
 
 
@@ -229,6 +286,13 @@ SELECT pg_catalog.setval('public.comments_id_seq', 1, false);
 
 
 --
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+
+
+--
 -- Name: articles articles_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -250,6 +314,14 @@ ALTER TABLE ONLY public.categories
 
 ALTER TABLE ONLY public.comments
     ADD CONSTRAINT comments_pk PRIMARY KEY (id);
+
+
+--
+-- Name: users users_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pk PRIMARY KEY (id);
 
 
 --
@@ -283,6 +355,14 @@ ALTER TABLE ONLY public.article_categories
 
 
 --
+-- Name: articles articles_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT articles_fk FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: comments comments_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -291,6 +371,13 @@ ALTER TABLE ONLY public.comments
 
 
 --
--- PostgreSQL database dump complete
+-- Name: comments comments_fk2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
+ALTER TABLE ONLY public.comments
+    ADD CONSTRAINT comments_fk2 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
