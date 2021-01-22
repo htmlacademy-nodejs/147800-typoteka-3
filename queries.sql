@@ -4,14 +4,11 @@ SELECT id, label FROM categories;
 -- get categories (id, label) with more than one article
 SELECT categories.id, categories.label FROM categories 
 INNER JOIN article_categories ON article_categories.category_id = categories.id
-INNER JOIN articles ON articles.id = article_categories.article_id
-GROUP BY categories.id
-HAVING count(categories.id) > 0;
+GROUP BY categories.id;
 
 -- get categories with articles count (id, label, articles count)
 SELECT categories.id, categories.label, count(categories.id) as "articles count" FROM categories 
 INNER JOIN article_categories ON article_categories.category_id = categories.id
-INNER JOIN articles ON articles.id = article_categories.article_id
 GROUP BY categories.id
 ORDER BY count(categories.id) DESC;
 
@@ -21,13 +18,16 @@ SELECT
   articles.title, 
   articles.announce, 
   articles.created_at, 
-  users.first_name as "user first name", 
-  users.last_name as "user last name", 
-  users.email as "user email",
-  count(comments.id) as "comments count"
+  users.first_name as user_first_name, 
+  users.last_name as user_last_name, 
+  users.email as user_email,
+  count(comments.id) as comments_count,
+  STRING_AGG(DISTINCT categories.label, ', ') AS categories_list
   FROM articles
+INNER JOIN article_categories ON article_categories.article_id = articles.id
+INNER JOIN categories ON categories.id = article_categories.category_id
+LEFT JOIN comments ON comments.article_id = articles.id
 INNER JOIN users ON users.id = articles.user_id
-INNER JOIN comments ON comments.article_id = articles.id
 GROUP BY articles.id, users.id
 ORDER BY articles.created_at DESC;
 
@@ -37,22 +37,25 @@ SELECT
   articles.title, 
   articles.announce, 
   articles.created_at, 
-  users.first_name as "user first name", 
-  users.last_name as "user last name", 
-  users.email as "user email",
-  count(comments.id) as "comments count"
+  users.first_name as user_first_name, 
+  users.last_name as user_last_name, 
+  users.email as user_email,
+  count(comments.id) as comments_count,
+  STRING_AGG(DISTINCT categories.label, ', ') AS categories_list
   FROM articles
+INNER JOIN article_categories ON article_categories.article_id = articles.id
+INNER JOIN categories ON categories.id = article_categories.category_id
+LEFT JOIN comments ON comments.article_id = articles.id
 INNER JOIN users ON users.id = articles.user_id
-INNER JOIN comments ON comments.article_id = articles.id
-GROUP BY articles.id, users.id
-HAVING articles.id = 1;
+WHERE articles.id = 1
+GROUP BY articles.id, users.id;
 
 -- get 5 newest comments (id, article id, user first name, user last name, text)
 SELECT 
   comments.id,
   comments.article_id,
-  users.first_name as "user first name",
-  users.last_name as "user last name",
+  users.first_name as user_first_name,
+  users.last_name as user_last_name,
   comments.text
 FROM comments
 INNER JOIN users ON comments.user_id = users.id
@@ -63,14 +66,13 @@ LIMIT 5;
 SELECT 
   comments.id,
   comments.article_id,
-  users.first_name as "user first name",
-  users.last_name as "user last name",
+  users.first_name as user_first_name,
+  users.last_name as user_last_name,
   comments.text
 FROM comments
 INNER JOIN users ON comments.user_id = users.id
-INNER JOIN articles ON comments.article_id = articles.id
-GROUP BY comments.id, users.id, articles.id
-HAVING articles.id = 1
+GROUP BY comments.id, users.id
+HAVING comments.article_id = 1
 ORDER BY comments.created_at DESC;
 
 -- update title for selected article
