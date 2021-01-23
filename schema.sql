@@ -39,8 +39,8 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE public.article_categories (
-    article_id integer,
-    category_id integer
+    article_id integer NOT NULL,
+    category_id integer NOT NULL
 );
 
 
@@ -53,12 +53,12 @@ ALTER TABLE public.article_categories OWNER TO postgres;
 CREATE TABLE public.articles (
     id integer NOT NULL,
     title character varying(50) NOT NULL,
-    created_at date,
+    created_at date NOT NULL,
     picture character varying(50),
     retina_picture character varying(50),
-    announce text,
-    full_text text,
-    user_id integer
+    announce text NOT NULL,
+    full_text text NOT NULL,
+    user_id integer NOT NULL
 );
 
 
@@ -92,7 +92,7 @@ ALTER SEQUENCE public.articles_id_seq OWNED BY public.articles.id;
 
 CREATE TABLE public.categories (
     id integer NOT NULL,
-    label character varying(50)
+    label character varying(50) NOT NULL
 );
 
 
@@ -127,9 +127,9 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 CREATE TABLE public.comments (
     id integer NOT NULL,
     article_id integer NOT NULL,
-    text text,
-    created_at timestamp(0) without time zone,
-    user_id integer
+    text text NOT NULL,
+    created_at timestamp(0) without time zone NOT NULL,
+    user_id integer NOT NULL
 );
 
 
@@ -163,9 +163,9 @@ ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
 
 CREATE TABLE public.users (
     id integer NOT NULL,
-    first_name character varying(50),
-    last_name character varying(50),
-    email character varying(50),
+    first_name character varying(50) NOT NULL,
+    last_name character varying(50) NOT NULL,
+    email character varying(50) NOT NULL,
     picture character varying(50),
     small_picture character varying(50),
     password character varying(200)
@@ -343,7 +343,7 @@ CREATE UNIQUE INDEX categories_id_idx ON public.categories USING btree (id);
 --
 
 ALTER TABLE ONLY public.article_categories
-    ADD CONSTRAINT article_categories_fk FOREIGN KEY (article_id) REFERENCES public.articles(id) ON UPDATE SET NULL ON DELETE CASCADE;
+    ADD CONSTRAINT article_categories_fk FOREIGN KEY (category_id) REFERENCES public.categories(id) ON UPDATE SET NULL ON DELETE RESTRICT;
 
 
 --
@@ -351,7 +351,7 @@ ALTER TABLE ONLY public.article_categories
 --
 
 ALTER TABLE ONLY public.article_categories
-    ADD CONSTRAINT article_categories_fk_1 FOREIGN KEY (category_id) REFERENCES public.categories(id) ON UPDATE SET NULL ON DELETE RESTRICT;
+    ADD CONSTRAINT article_categories_fk_1 FOREIGN KEY (article_id) REFERENCES public.articles(id) ON UPDATE SET NULL ON DELETE CASCADE;
 
 
 --
@@ -359,7 +359,7 @@ ALTER TABLE ONLY public.article_categories
 --
 
 ALTER TABLE ONLY public.articles
-    ADD CONSTRAINT articles_fk FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT articles_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --
@@ -367,15 +367,15 @@ ALTER TABLE ONLY public.articles
 --
 
 ALTER TABLE ONLY public.comments
-    ADD CONSTRAINT comments_fk FOREIGN KEY (article_id) REFERENCES public.articles(id);
+    ADD CONSTRAINT comments_fk FOREIGN KEY (article_id) REFERENCES public.articles(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: comments comments_fk2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: comments comments_fk_1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.comments
-    ADD CONSTRAINT comments_fk2 FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT comments_fk_1 FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --
