@@ -4,6 +4,7 @@ const express = require(`express`);
 const chalk = require(`chalk`);
 const routes = require(`../api/routes`);
 const { getLogger } = require(`../logger`);
+const sequelize = require(`../models/sequelize`);
 
 const PORT = 3000;
 
@@ -31,7 +32,13 @@ app.use((error) => {
   logger.error(`${error}`);
 });
 
-const run = (args) => {
+const run = async (args) => {
+  try {
+    await sequelize.authenticate();
+  } catch (err) {
+    process.exit(1);
+  }
+
   const [customPort] = args;
   const port = Number.parseInt(customPort, 10) || PORT;
 
@@ -48,5 +55,5 @@ const run = (args) => {
 module.exports = {
   name: `--server`,
   run,
-  app,
+  app
 };
