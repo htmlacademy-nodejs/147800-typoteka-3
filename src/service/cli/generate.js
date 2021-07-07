@@ -40,7 +40,7 @@ const generateArticles = (count, titles, categories, sentences, comments) =>
       return {
         id: nanoid(),
         title: titles[getRandomInt(0, titles.length - 1)],
-        createdDate: getCreatedDate(),
+        createdAt: getCreatedDate(),
         picture: picture ? picture.replace(`.jpg`, `@1x.jpg`) : null,
         retinaPicture: picture ? picture.replace(`.jpg`, `@2x.jpg`) : null,
         announce: shuffle(sentences).slice(1, 5).join(` `),
@@ -48,7 +48,7 @@ const generateArticles = (count, titles, categories, sentences, comments) =>
         category: [categories[getRandomInt(0, categories.length - 1)]],
         comments: shuffle(comments)
           .slice(1, getRandomInt(0, comments.length - 1))
-          .map((comment) => ({ id: nanoid(), text: comment })),
+          .map((comment) => ({ id: nanoid(), text: comment }))
       };
     });
 
@@ -91,5 +91,5 @@ const run = async (args) => {
 module.exports = {
   name: `--generate`,
   run,
-  readContent,
+  readContent
 };

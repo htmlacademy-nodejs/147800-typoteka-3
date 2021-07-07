@@ -61,7 +61,7 @@ describe(`server test`, () => {
       const res = await request(server).get(`/api/articles/0/comments`);
 
       expect(res.statusCode).toBe(404);
-      expect(res.text).toBe(`Article not found`);
+      expect(res.text).toBe(`Comments not found`);
     });
 
     test(`POST comment successfully`, async () => {
@@ -86,17 +86,19 @@ describe(`server test`, () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual([
-      `Деревья`,
-      `За жизнь`,
-      `Без рамки`,
-      `Разное`,
-      `IT`,
-      `Музыка`,
-      `Кино`,
-      `Программирование`,
-      `Железо`,
-      `Спорт`,
-      `Культура`,
+      { id: 1, label: `Жизнь и путешествия`, count: `1` },
+      { id: 2, label: `Путешествия`, count: `0` },
+      { id: 3, label: `Дизайн и программирование`, count: `1` },
+      { id: 4, label: `Другое`, count: `2` },
+      { id: 5, label: `Личное`, count: `0` },
+      { id: 6, label: `Дизайн`, count: `0` },
+      { id: 7, label: `Дизайн и обустройство`, count: `0` },
+      { id: 8, label: `Удаленная работа`, count: `0` },
+      { id: 9, label: `Фриланс`, count: `0` },
+      { id: 10, label: `Автомобили`, count: `0` },
+      { id: 11, label: `Бизнес`, count: `0` },
+      { id: 12, label: `Производство игрушек`, count: `0` },
+      { id: 13, label: `UX & UI`, count: `0` }
     ]);
   });
 

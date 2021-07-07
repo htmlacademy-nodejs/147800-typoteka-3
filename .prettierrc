@@ -1,1 +1,1 @@
-{ "arrowParens": "always" }
+{ "arrowParens": "always", "trailingComma": "none" }

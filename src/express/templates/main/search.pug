@@ -13,7 +13,7 @@ block content
           if articles.length > 0
             each article in articles
               .search__result
-                time.search__date(datetime=`${article.createdDate}`) #{dayjs(article.createdDate).format(`DD.MM.YYYY, hh:mm`)}
+                time.search__date(datetime=`${article.createdAt}`) #{dayjs(article.createdAt).format(`DD.MM.YYYY, hh:mm`)}
                 a.search__link(href='#') #{article.announce}
         if articles.length === 0
           p.search-page__empty Ничего не нашлось

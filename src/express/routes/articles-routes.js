@@ -12,7 +12,7 @@ const UPLOAD_DIR = `public/img`;
 const MimeTypeExtension = {
   "image/png": `png`,
   "image/jpeg": `jpg`,
-  "image/jpg": `jpg`,
+  "image/jpg": `jpg`
 };
 
 const storage = multer.diskStorage({
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const fileExtention = MimeTypeExtension[file.mimetype];
     cb(null, `${nanoid()}.${fileExtention}`);
-  },
+  }
 });
 
 const fileFilter = (req, file, cb) => {
@@ -33,8 +33,8 @@ const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
+    fileSize: 5 * 1024 * 1024
+  }
 });
 
 articlesRouter.get(`/add`, async (req, res) => {
@@ -52,15 +52,34 @@ articlesRouter.post(`/add`, upload.single(`picture`), async (req, res) => {
     res.render(`articles/new-post`, { data: req.body, categories });
   }
 });
-articlesRouter.get(`/category/:id`, (req, res) =>
-  res.render(`articles/articles-by-category`)
-);
+articlesRouter.get(`/category/:id`, async (req, res) => {
+  const { id } = req.params;
+  const { data: categories } = await axios.get(`${URL}/api/categories`);
+  const { data: selectedCategory } = await axios.get(
+    `${URL}/api/categories/${id}`
+  );
+  const { data: articles } = await axios.get(`${URL}/api/articles`, {
+    params: {
+      categoryId: id
+    }
+  });
+  res.render(`articles/articles-by-category`, {
+    selectedCategory,
+    articles,
+    categories
+  });
+});
 articlesRouter.get(`/edit/:id`, async (req, res) => {
   const { data: article } = await axios.get(
     `${URL}/api/articles/${req.params.id}`
   );
   res.render(`articles/post`, { article });
 });
-articlesRouter.get(`/:id`, (req, res) => res.render(`articles/post`));
+articlesRouter.get(`/:id`, async (req, res) => {
+  const { data: article } = await axios.get(
+    `${URL}/api/articles/${req.params.id}`
+  );
+  res.render(`articles/post`, { article });
+});
 
 module.exports = articlesRouter;

@@ -1,34 +1,35 @@
 "use strict";
 
-const fs = require(`fs`).promises;
 const { Router } = require(`express`);
-const { readContent } = require(`../cli/generate`);
+const { CategoryService } = require(`../data-service`);
 const articlesRoutes = require(`./routes/articles`);
 
 const app = new Router();
-const FILENAME = `mocks.json`;
 const HttpCode = {
   OK: 200,
   NOT_FOUND: 404,
-  INTERNAL_SERVER_ERROR: 500,
+  INTERNAL_SERVER_ERROR: 500
 };
 
 app.use(`/articles`, articlesRoutes);
 
 app.get(`/categories`, async (req, res) => {
-  const categories = await readContent(`./data/categories.txt`);
-  res.json(categories);
+  const { count } = req.query;
+  const categories = await new CategoryService().findAll(count);
+  res.status(HttpCode.OK).json(categories);
+});
+
+app.get(`/categories/:id`, async (req, res) => {
+  const { id } = req.params;
+  const category = await new CategoryService().findOne(id);
+  res.status(HttpCode.OK).json(category);
 });
 
 app.get(`/search`, async (req, res) => {
   try {
-    const fileContent = await fs.readFile(FILENAME);
-    const offers = JSON.parse(fileContent);
     const { query } = req.query;
-    const filteredOffers = offers.filter((offer) =>
-      offer.title.toLowerCase().includes(query.toLowerCase().trim())
-    );
-    res.json(filteredOffers);
+    const articles = new CategoryService().findAll({ query });
+    res.json(articles);
   } catch (error) {
     res.status(HttpCode.INTERNAL_SERVER_ERROR).send(error);
   }
