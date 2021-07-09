@@ -11,16 +11,26 @@ const HttpCode = {
 };
 
 articlesRouter.get(`/`, async (req, res) => {
-  const { count, query, categoryId, userId } = req.query;
+  const { count, query, categoryId, userId, offset, limit } = req.query;
 
   try {
-    const articles = await new ArticleService().findAll({
-      query,
-      count,
-      categoryId,
-      userId
-    });
-    res.status(HttpCode.OK).json(articles);
+    if (offset || limit) {
+      const articles = await new ArticleService().findPage({
+        categoryId,
+        limit,
+        offset
+      });
+
+      res.status(HttpCode.OK).json(articles);
+    } else {
+      const articles = await new ArticleService().findAll({
+        query,
+        count,
+        categoryId,
+        userId
+      });
+      res.status(HttpCode.OK).json(articles);
+    }
   } catch (error) {
     res.status(HttpCode.INTERNAL_SERVER_ERROR).send(error);
   }

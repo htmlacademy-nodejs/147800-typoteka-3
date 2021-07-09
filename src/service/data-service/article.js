@@ -33,6 +33,23 @@ class ArticleService {
     return articles;
   }
 
+  async findPage({ categoryId, limit, offset }) {
+    const { count, rows } = await Articles.findAndCountAll({
+      limit,
+      offset,
+      include: [
+        { model: Comments, as: Aliase.COMMENTS },
+        {
+          model: Categories,
+          as: Aliase.CATEGORIES,
+          where: categoryId ? { id: categoryId } : {}
+        }
+      ],
+      distinct: true,
+    });
+    return { count, articles: rows };
+  }
+
   async findArticleComments({ articleId }) {
     const comments = await Comments.findAll({
       where: { articleId },
