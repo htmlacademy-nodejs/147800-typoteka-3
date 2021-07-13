@@ -45,7 +45,7 @@ class ArticleService {
           where: categoryId ? { id: categoryId } : {}
         }
       ],
-      distinct: true,
+      distinct: true
     });
     return { count, articles: rows };
   }
