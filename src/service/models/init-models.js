@@ -1,19 +1,19 @@
 "use strict";
 
 const Aliase = require(`./constants/aliase`);
-let DataTypes = require(`sequelize`).DataTypes;
-let _ArticleCategories = require(`./ArticleCategories`);
-let _Articles = require(`./Articles`);
-let _Categories = require(`./Categories`);
-let _Comments = require(`./Comments`);
-let _Users = require(`./Users`);
+const DataTypes = require(`sequelize`).DataTypes;
+const _ArticleCategories = require(`./ArticleCategories`);
+const _Articles = require(`./Articles`);
+const _Categories = require(`./Categories`);
+const _Comments = require(`./Comments`);
+const _Users = require(`./Users`);
 
 function initModels(sequelize) {
-  let ArticleCategories = _ArticleCategories(sequelize, DataTypes);
-  let Articles = _Articles(sequelize, DataTypes);
-  let Categories = _Categories(sequelize, DataTypes);
-  let Comments = _Comments(sequelize, DataTypes);
-  let Users = _Users(sequelize, DataTypes);
+  const ArticleCategories = _ArticleCategories(sequelize, DataTypes);
+  const Articles = _Articles(sequelize, DataTypes);
+  const Categories = _Categories(sequelize, DataTypes);
+  const Comments = _Comments(sequelize, DataTypes);
+  const Users = _Users(sequelize, DataTypes);
 
   ArticleCategories.belongsTo(Articles, {
     as: Aliase.ARTICLE,
