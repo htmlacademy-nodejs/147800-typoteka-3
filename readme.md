@@ -1,7 +1,7 @@
 # Личный проект «Типотека» [![Build status][travis-image]][travis-url]
 
 - Студент: [Александр Сашин](https://up.htmlacademy.ru/nodejs/3/user/147800).
-- Наставник: [Артемий Бойков](https://htmlacademy.ru/profile/id607755).
+- Наставник: [Артем Макаров](https://htmlacademy.ru/profile/deepsick).
 
 ---
 
@@ -9,6 +9,16 @@ _Не удаляйте и не изменяйте папки и файлы:_
 _`.editorconfig`, `.gitattributes`, `.gitignore`, `.travis.yml`, `package.json`._
 
 ---
+
+### Запуск приложения
+
+1. Установите локально PostgreSQL, NodeJS v14
+2. Создайте базу данных с именем `typoteka`
+3. Создайте в корне проекта файл `.env` с данными по аналогии с `.env-example`
+4. Выполните команду `npm install`
+5. Заполните БД данными, выполните `npm run fill-db`
+6. Запустите backend-сервер с помощью `npm run server`
+7. Запустите локальный frontend-сервер с помощью `npm run start-front-server`
 
 ### Памятка
 
