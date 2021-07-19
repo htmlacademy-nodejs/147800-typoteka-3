@@ -9,6 +9,7 @@
     "generate": "node ./src/service/service.js --generate 10",
     "server": "nodemon ./src/service/service.js -- --server 3000",
     "start-front-server": "nodemon ./src/express/index.js",
+    "fill-db": "node ./run.js",
     "test": "npm run test::rest",
     "test::rest": "jest --coverage",
     "eslint": "eslint --ext .js src/"

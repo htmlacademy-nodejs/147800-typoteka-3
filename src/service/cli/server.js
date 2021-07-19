@@ -4,7 +4,7 @@ const express = require(`express`);
 const chalk = require(`chalk`);
 const routes = require(`../api/routes`);
 const { getLogger } = require(`../logger`);
-const sequelize = require(`../models/sequelize`);
+const sequelize = require(`../sequelize`);
 
 const PORT = 3000;
 
