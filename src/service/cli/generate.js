@@ -42,7 +42,6 @@ const generateArticles = (count, titles, categories, sentences, comments) =>
         title: titles[getRandomInt(0, titles.length - 1)],
         createdAt: getCreatedDate(),
         picture: picture ? picture.replace(`.jpg`, `@1x.jpg`) : null,
-        retinaPicture: picture ? picture.replace(`.jpg`, `@2x.jpg`) : null,
         announce: shuffle(sentences).slice(1, 5).join(` `),
         fullText: shuffle(sentences).join(` `),
         category: [categories[getRandomInt(0, categories.length - 1)]],

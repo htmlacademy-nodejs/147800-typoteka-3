@@ -5,6 +5,8 @@ const axios = require(`axios`);
 const multer = require(`multer`);
 const { nanoid } = require(`nanoid`);
 const articlesRouter = new Router();
+const { ensureArray } = require(`../../utils`);
+const upload = require(`../middlewares/upload`);
 
 const URL = `http://localhost:3000`;
 const UPLOAD_DIR = `public/img`;
@@ -29,27 +31,38 @@ const fileFilter = (req, file, cb) => {
   cb(null, isValid);
 };
 
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024
-  }
-});
+// const upload = multer({
+//   storage,
+//   fileFilter,
+//   limits: {
+//     fileSize: 5 * 1024 * 1024
+//   }
+// });
 
 articlesRouter.get(`/add`, async (req, res) => {
   const { data: categories } = await axios.get(`${URL}/api/categories`);
   res.render(`articles/new-post`, { data: {}, categories });
 });
 articlesRouter.post(`/add`, upload.single(`picture`), async (req, res) => {
-  const { file } = req;
+  const { user } = req.session;
+  const { body, file } = req;
+
+  const articleData = {
+    title: body.title,
+    announce: body.announce,
+    fullText: body.fullText,
+    picture: file.filename,
+    categories: ensureArray(body.category),
+    userId: user.id
+  };
 
   try {
-    await axios.post(`${URL}/api/articles`, req.body);
+    await axios.post(`${URL}/api/articles`, articleData);
     res.redirect(`/my`);
   } catch (error) {
-    const { data: categories } = await axios.get(`${URL}/api/categories`);
-    res.render(`articles/new-post`, { data: req.body, categories });
+    res.redirect(
+      `/articles/add?error=${encodeURIComponent(error.response.data)}`
+    );
   }
 });
 articlesRouter.get(`/category/:id`, async (req, res) => {

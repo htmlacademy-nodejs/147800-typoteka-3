@@ -1,6 +1,7 @@
 "use strict";
 
 const request = require(`supertest`);
+const { HttpCode } = require(`../../../constants`);
 const { app: server } = require(`../server`);
 
 describe(`server test`, () => {
@@ -12,10 +13,20 @@ describe(`server test`, () => {
     });
 
     test(`POST article successfully`, async () => {
-      const res = await request(server).post(`/api/articles`);
+      const newArticle = {
+        title: `Мария Ласицкене взлетела к золоту! А ведь она приехала в Токио сразу после травмы и главного кризиса в карьере`,
+        categories: [4],
+        announce: `Мария Ласицкене завоевала золото Токио-2020!`,
+        fullText: `Мария Ласицкене завоевала золото Токио-2020! Наша прыгунья будто бы набирала по ходу финала – чем выше поднимали планку, тем увереннее  Ласицкене выглядела на фоне соперниц. `,
+        userId: 1
+      };
+      const res = await request(server).post(`/api/articles`).send(newArticle);
 
-      expect(res.statusCode).toBe(200);
-      expect(res.text).toEqual(`Add new article`);
+      expect(res.statusCode).toBe(HttpCode.CREATED);
+      const { categories, ...newOfferDataWithoutCategories } = newArticle;
+      expect(res.body).toEqual(
+        expect.objectContaining(newOfferDataWithoutCategories)
+      );
     });
 
     test(`GET article successfully`, async () => {
@@ -35,10 +46,20 @@ describe(`server test`, () => {
     });
 
     test(`PUT article successfully`, async () => {
-      const res = await request(server).put(`/api/articles/1`);
+      const updatedArticle = {
+        title: `Мария Ласицкене взлетела к золоту! А ведь она приехала в Токио сразу после травмы и главного кризиса в карьере`,
+        categories: [4],
+        announce: `Мария Ласицкене завоевала золото Токио-2020! Наша прыгунья будто бы набирала по ходу финала – чем выше поднимали планку, тем увереннее  Ласицкене выглядела на фоне соперниц. `,
+        fullText: `Мария Ласицкене завоевала золото Токио-2020! Наша прыгунья будто бы набирала по ходу финала – чем выше поднимали планку, тем увереннее  Ласицкене выглядела на фоне соперниц. `,
+        userId: 1
+      };
+      const res = await request(server)
+        .put(`/api/articles/4`)
+        .send(updatedArticle);
 
       expect(res.statusCode).toBe(200);
-      expect(res.text).toEqual(`Update article with articleId="1"`);
+      const getResponse = await request(server).get(`/api/articles/4`);
+      expect(getResponse.body.fullText).toEqual(updatedArticle.fullText);
     });
 
     test(`DELETE article successfully`, async () => {
@@ -65,10 +86,16 @@ describe(`server test`, () => {
     });
 
     test(`POST comment successfully`, async () => {
-      const res = await request(server).post(`/api/articles/1/comments`);
+      const newComment = {
+        text: `Валидному комментарию достаточно этих полей`,
+        userId: 1
+      };
+      const res = await request(server)
+        .post(`/api/articles/1/comments`)
+        .send(newComment);
 
-      expect(res.statusCode).toBe(200);
-      expect(res.text).toEqual(`Add new comment to article with articleId="1"`);
+      expect(res.statusCode).toBe(HttpCode.CREATED);
+      expect(res.body).toEqual(expect.objectContaining(newComment));
     });
 
     test(`DELETE comment successfully`, async () => {

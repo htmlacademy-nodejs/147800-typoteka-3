@@ -14,19 +14,10 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING,
         allowNull: false
       },
-      createdAt: {
-        type: DataTypes.DATEONLY,
-        allowNull: false,
-        field: `created_at`
-      },
+      createdAt: { type: DataTypes.DATE, field: `created_at` },
       picture: {
         type: DataTypes.STRING,
         allowNull: true
-      },
-      retinaPicture: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        field: `retina_picture`
       },
       announce: {
         type: DataTypes.TEXT,
@@ -51,7 +42,8 @@ module.exports = function (sequelize, DataTypes) {
       sequelize,
       tableName: `articles`,
       schema: `public`,
-      timestamps: false,
+      timestamps: true,
+      updatedAt: false,
       indexes: [
         {
           name: `articles_id_idx`,

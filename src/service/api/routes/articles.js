@@ -2,13 +2,12 @@
 
 const { Router } = require(`express`);
 const articlesRouter = new Router();
-const { ArticleService } = require(`../../data-service`);
-
-const HttpCode = {
-  OK: 200,
-  NOT_FOUND: 404,
-  INTERNAL_SERVER_ERROR: 500
-};
+const { HttpCode } = require(`../../../constants`);
+const articleValidator = require(`../../middlewares/article-validator`);
+const articleExist = require(`../../middlewares/article-exists`);
+const commentValidator = require(`../../middlewares/comment-validator`);
+const routeParamsValidator = require(`../../middlewares/route-params-validator`);
+const { ArticleService, CommentService } = require(`../../data-service`);
 
 articlesRouter.get(`/`, async (req, res) => {
   const { count, query, categoryId, userId, offset, limit } = req.query;
@@ -36,8 +35,10 @@ articlesRouter.get(`/`, async (req, res) => {
   }
 });
 
-articlesRouter.post(`/`, (req, res) => {
-  res.send(`Add new article`);
+articlesRouter.post(`/`, articleValidator, async (req, res) => {
+  const article = await new ArticleService().create(req.body);
+
+  return res.status(HttpCode.CREATED).json(article);
 });
 
 articlesRouter.get(`/:articleId`, async (req, res) => {
@@ -55,9 +56,20 @@ articlesRouter.get(`/:articleId`, async (req, res) => {
   }
 });
 
-articlesRouter.put(`/:articleId`, (req, res) => {
-  res.send(`Update article with articleId="${req.params.articleId}"`);
-});
+articlesRouter.put(
+  `/:articleId`,
+  [routeParamsValidator, articleValidator],
+  async (req, res) => {
+    const { articleId } = req.params;
+
+    const updated = await new ArticleService().update(articleId, req.body);
+
+    if (!updated) {
+      return res.status(HttpCode.NOT_FOUND).send(`Not found with ${articleId}`);
+    }
+    return res.status(HttpCode.OK).send(`Updated`);
+  }
+);
 
 articlesRouter.delete(`/:articleId`, (req, res) => {
   res.send(`Delete article with articleId="${req.params.articleId}"`);
@@ -79,11 +91,17 @@ articlesRouter.get(`/:articleId/comments`, async (req, res) => {
   }
 });
 
-articlesRouter.post(`/:articleId/comments`, (req, res) => {
-  res.send(
-    `Add new comment to article with articleId="${req.params.articleId}"`
-  );
-});
+articlesRouter.post(
+  `/:articleId/comments`,
+  [routeParamsValidator, articleExist(ArticleService), commentValidator],
+  async (req, res) => {
+    const { articleId } = req.params;
+
+    const comment = await new CommentService().create(articleId, req.body);
+
+    return res.status(HttpCode.CREATED).json(comment);
+  }
+);
 
 articlesRouter.delete(`/:articleId/comments/:commentId`, (req, res) => {
   res.send(

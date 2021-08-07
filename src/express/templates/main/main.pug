@@ -76,7 +76,7 @@ block content
                   a.preview__breadcrumbs-link(href='#') #{category.label}
             if article.picture
               .preview__background
-                img.preview__background-image(src=`/img/${article.picture}`, width='460', height='240', srcset=`/img/${article.picture} 1x, img/${article.retinaPicture} 2x`, alt='Фотография')
+                +getImage(article.picture, 'Фотография')
             time.preview__time(datetime=`${article.createdAt}`) #{dayjs(article.createdAt).format(`DD.MM.YYYY, hh:mm`)}
             h3.preview__name
               a.preview__name-link(href='#') #{article.title}
