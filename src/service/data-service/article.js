@@ -5,6 +5,18 @@ const Aliase = require(`../models/constants/aliase`);
 const { Categories, Comments, Articles, Users } = require(`../models/index`);
 
 class ArticleService {
+  async create(articleData) {
+    const article = await Articles.create(articleData);
+    return article.get();
+  }
+
+  async update(id, article) {
+    const [affectedRows] = await Articles.update(article, {
+      where: { id }
+    });
+    return !!affectedRows;
+  }
+
   async findAll({ query, articleId, userId, categoryId }) {
     let whereStatement = {};
     if (articleId) {
@@ -56,6 +68,35 @@ class ArticleService {
       attributes: { exclude: [`articleId`] }
     });
     return comments;
+  }
+
+  findOne(id, needComments) {
+    const include = [
+      Aliase.CATEGORIES,
+      {
+        model: Users,
+        as: Aliase.USERS,
+        attributes: {
+          exclude: [`password`]
+        }
+      }
+    ];
+    if (needComments) {
+      include.push({
+        model: Comments,
+        as: Aliase.COMMENTS,
+        include: [
+          {
+            model: Users,
+            as: Aliase.USERS,
+            attributes: {
+              exclude: [`password`]
+            }
+          }
+        ]
+      });
+    }
+    return Articles.findByPk(id, { include });
   }
 }
 

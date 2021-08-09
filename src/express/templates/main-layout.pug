@@ -10,6 +10,11 @@ html(lang='ru')
     link(rel='preload', href='/fonts/SFProDisplay-Regular.woff2', as='font', crossorigin='anonymous')
     link(rel='stylesheet', href='/css/style.min.css')
   body
+    mixin getImage(imageFile, altText)
+      -
+        const retinaImageFile = imageFile.replace('@1x','@2x');
+      
+      img.preview__background-image(src=`/img/${imageFile}`, width='460', height='240', srcset=`/img/${retinaImageFile} 2x` alt=altText)
     mixin pagination(page, totalPages, width, prefix)
       -
         let start = page - width;
@@ -36,7 +41,11 @@ html(lang='ru')
               a(href=`${prefix}page=${i}`)= i
           li
             a.pagination__button.button.button--forward(class={'button--disabled': end >= totalPages} aria-label='Страница вперед' href=`${prefix}page=${page + 1}`) Вперед
-    
+   
+    mixin errorMessage(message)
+      if message
+        .server-error= message
+
     .wrapper
       include components/header.pug
       block content

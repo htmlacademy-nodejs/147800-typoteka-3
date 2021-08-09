@@ -9,17 +9,15 @@ CREATE TABLE users (
     first_name character varying(50) NOT NULL,
     last_name character varying(50) NOT NULL,
     email character varying(50) NOT NULL,
-    picture character varying(50),
-    small_picture character varying(50),
+    avatar character varying(50),
     password character varying(200)
 );
 
 CREATE TABLE articles (
     id SERIAL PRIMARY KEY,
-    title character varying(50) NOT NULL,
+    title character varying(250) NOT NULL,
     created_at date NOT NULL,
     picture character varying(50),
-    retina_picture character varying(50),
     announce text NOT NULL,
     full_text text NOT NULL,
     user_id integer NOT NULL,

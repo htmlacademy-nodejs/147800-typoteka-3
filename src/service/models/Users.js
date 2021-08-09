@@ -24,14 +24,9 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING,
         allowNull: false
       },
-      picture: {
+      avatar: {
         type: DataTypes.STRING,
         allowNull: true
-      },
-      smallPicture: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        field: `small_picture`
       },
       password: {
         type: DataTypes.STRING,

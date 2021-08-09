@@ -23,11 +23,7 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        field: `created_at`
-      },
+      createdAt: { type: DataTypes.DATE, field: `created_at` },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -42,7 +38,8 @@ module.exports = function (sequelize, DataTypes) {
       sequelize,
       tableName: `comments`,
       schema: `public`,
-      timestamps: false,
+      timestamps: true,
+      updatedAt: false,
       indexes: [
         {
           name: `comments_pk`,
