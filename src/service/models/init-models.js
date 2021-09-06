@@ -42,9 +42,9 @@ function initModels(sequelize) {
     through: ArticleCategories,
     foreignKey: `categoryId`
   });
-  Articles.belongsTo(Users, { as: Aliase.USERS, foreignKey: `userId` });
+  Articles.belongsTo(Users, { as: Aliase.USER, foreignKey: `userId` });
   Users.hasMany(Articles, { as: Aliase.ARTICLE, foreignKey: `userId` });
-  Comments.belongsTo(Users, { as: Aliase.USERS, foreignKey: `userId` });
+  Comments.belongsTo(Users, { as: Aliase.USER, foreignKey: `userId` });
   Users.hasMany(Comments, { as: Aliase.COMMENTS, foreignKey: `userId` });
 
   return {
