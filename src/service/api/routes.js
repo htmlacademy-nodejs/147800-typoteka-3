@@ -3,6 +3,7 @@
 const { Router } = require(`express`);
 const { CategoryService } = require(`../data-service`);
 const articlesRoutes = require(`./routes/articles`);
+const usersRoutes = require(`./routes/users`);
 
 const app = new Router();
 const HttpCode = {
@@ -12,6 +13,8 @@ const HttpCode = {
 };
 
 app.use(`/articles`, articlesRoutes);
+
+app.use(`/user`, usersRoutes);
 
 app.get(`/categories`, async (req, res) => {
   const { count } = req.query;

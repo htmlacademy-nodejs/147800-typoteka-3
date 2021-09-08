@@ -4,7 +4,10 @@ const Joi = require(`joi`);
 const { HttpCode } = require(`../../constants`);
 
 const schema = Joi.object({
-  name: Joi.string()
+  firstName: Joi.string()
+    .pattern(/[^0-9$&+,:;=?@#|'<>.^*()%!]+/)
+    .required(),
+  lastName: Joi.string()
     .pattern(/[^0-9$&+,:;=?@#|'<>.^*()%!]+/)
     .required(),
   email: Joi.string().email().required(),
@@ -22,8 +25,7 @@ module.exports = (service) => async (req, res, next) => {
       .status(HttpCode.BAD_REQUEST)
       .send(error.details.map((err) => err.message).join(`\n`));
   }
-
-  const userByEmail = await service.findByEmail(req.body.email);
+  const userByEmail = await new service().findByEmail(req.body.email);
 
   if (userByEmail) {
     return res.status(HttpCode.BAD_REQUEST).send(`Email is already in use`);

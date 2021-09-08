@@ -75,7 +75,7 @@ class ArticleService {
       Aliase.CATEGORIES,
       {
         model: Users,
-        as: Aliase.USERS,
+        as: Aliase.USER,
         attributes: {
           exclude: [`password`]
         }
@@ -88,7 +88,7 @@ class ArticleService {
         include: [
           {
             model: Users,
-            as: Aliase.USERS,
+            as: Aliase.USER,
             attributes: {
               exclude: [`password`]
             }

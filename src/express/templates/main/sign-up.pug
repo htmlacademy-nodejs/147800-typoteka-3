@@ -15,28 +15,29 @@ block content
           li.popup__tab.popup__tab--log-in
             button.popup__tab-switcher.button(type='button') Войти
         .popup__form.popup__form--active.form.form--register
-          form(action='#', method='get')
+          form(action='/register', method='post', enctype='multipart/form-data', autocomplete='off')
             .form__field
               label
-                input(type='email', placeholder='Электронная почта', required='')
+                input#email(name='email', type='email', placeholder='Электронная почта', required='')
             .form__field
               label
-                input(type='text', placeholder='Имя', required='')
+                input#first-name(name='first-name', type='text', placeholder='Имя', required='')
             .form__field
               label
-                input(type='text', placeholder='Фамилия')
+                input#last-name(name='last-name', type='text', placeholder='Фамилия')
             .form__field
               label
-                input(type='password', placeholder='Пароль', required='')
+                input#password(name='password', type='password', placeholder='Пароль', required='')
             .form__field
               label
-                input(type='password', placeholder='Повтор пароля', required='')
+                input#password-again(name='password-again', type='password', placeholder='Повтор пароля', required='')
             .form__image-loader
               a.form__avatar.avatar
                 img(src='/img/icons/smile.svg', alt='аватар пользователя')
               label
-                input.visually-hidden(type='file')
+                input#avatar.visually-hidden(name='avatar', type='file')
                 | Загрузить фото профиля
+            +errorMessage(error)
             button.form__submit-btn.form__submit-btn--register.button.button--colored(type='submit') Зарегистрироваться
         .popup__form.popup__form--hidden.form.form--log-in
           form(action='#', method='get')
